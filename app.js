@@ -1,68 +1,23 @@
-const http = require('http');
-// const createServer = require('http').createServer;
+const express = require('express');
+const chalk = require('chalk');
+const debug = require('debug')('app');
+const morgan = require('morgan');
+const path = require('path');
 
-const appServer = http.createServer((req, res) => {
-    res.end('Hello World...\n');
-})
+const PORT = process.env.PORT || 8000;
 
-// const appServer = createServer((req, res) => {
-//     res.end('Hello World...\n');
-// })
+const app = express();
+app.use(morgan('tiny'));
+app.use(express.static(path.join(__dirname, '/public/')));
 
-appServer.listen(8000, ()=> {
-    console.log('Server is running on port 8000');
-})
+app.set('views', './src/views');
+app.set('view engine', 'ejs');
 
-
-const theOneFunc = (greeting) => {
-    console.log(greeting);
-}
-
-setTimeout(theOneFunc, 4 * 1000, 'Hello after 4 sec');
-setTimeout(theOneFunc, 8 * 1000, 'Hello after 8 sec');
+app.get('/', (req, res) => {
+    res.render('index', { title: 'My Conference', data: ['a', 'b', 'c'] });
+});
 
 
-// setInterval(theOneFunc, 1 * 1000, 'Hello every 2 sec');
-
-let counter = 0;
-
-const intervalId = setInterval(() => {
-    console.log('Hello World');
-    counter += 1;
-
-    if(counter === 5) {
-        console.log('Done');
-        clearInterval(intervalId);
-    }
-} , 1000);
-
-
-
-//destructuring
-// const PI = Math.PI;
-// const E = Math.E;
-// const SQRT2 = Math.SQRT2;
-
-
-const {PI, E, SQRT2} = Math;
-
-
-//rest operator
-const [first, ...restOfItems] = [10, 20, 30, 40];
-
-const data = {
-    temp1: '001',
-    temp2: '002',
-    firstName: 'John',
-    lastName: 'Doe'
-}
-
-const {temp1, temp2, ...person} = data;
-
-
-const newArray = [...restOfItems];
-
-const newObject = {
-    ...person
-}
-
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${chalk.green(PORT)} `);
+});
